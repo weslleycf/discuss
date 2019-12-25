@@ -1,15 +1,21 @@
 defmodule DiscussWeb.TopicController do
     use DiscussWeb, :controller
     alias Discuss.Topic
+    alias Discuss.Repo
+
 
     plug Discuss.Plugs.RequireAuth when action in [:new, :create, :edit, :update, :delete]
     plug :check_topic_owner when action in [:update, :edit, :delete]
    
-   
+    
+    def show(conn, %{"id" => topic_id}) do
+        topic = Repo.get!(Topic, topic_id)
+        render conn, "show.html", topic: topic
+    end
    
     def delete(conn, %{"id" => topic_id}) do
-        Discuss.Repo.get!(Topic, topic_id)
-        |> Discuss.Repo.delete!
+        Repo.get!(Topic, topic_id)
+        |> Repo.delete!
 
         conn
         |> put_flash(:info, "Topic Deleted")
@@ -19,10 +25,10 @@ defmodule DiscussWeb.TopicController do
     
     
     def update(conn, %{"id" => topic_id, "topic" => topic}) do
-        old_topic = Discuss.Repo.get(Topic, topic_id)
+        old_topic = Repo.get(Topic, topic_id)
         changeset = Topic.changeset(old_topic, topic) 
         
-        case Discuss.Repo.update(changeset) do
+        case Repo.update(changeset) do
             {:ok, _topic} ->
                 conn
                 |> put_flash(:info, "Topic updated")
@@ -36,7 +42,7 @@ defmodule DiscussWeb.TopicController do
     end
 
     def edit(conn, %{"id" => topic_id}) do
-       topic = Discuss.Repo.get(Topic, topic_id)
+       topic = Repo.get(Topic, topic_id)
             
        changeset = Topic.changeset(topic,%{})     
        render conn, "edit.html", changeset: changeset, topic: topic       
@@ -54,7 +60,7 @@ defmodule DiscussWeb.TopicController do
          |> Ecto.build_assoc(:topics)
          |> Topic.changeset(topic)
 
-        case Discuss.Repo.insert(changeset) do
+        case Repo.insert(changeset) do
             {:ok, _topic} -> 
                 conn
                 |> put_flash( :info, "Topic Created")
@@ -76,7 +82,7 @@ defmodule DiscussWeb.TopicController do
         %{params: %{"id" => topic_id}} = conn
 
        
-        if Discuss.Repo.get(Topic, topic_id).user_id == conn.assigns.user.id do
+        if Repo.get(Topic, topic_id).user_id == conn.assigns.user.id do
            conn
         else 
             conn
