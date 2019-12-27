@@ -2,8 +2,8 @@ use Mix.Config
 
 # Configure your database
 config :discuss, Discuss.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: "weslley",
+  password: "1234",
   database: "discuss_test",
   hostname: "localhost",
   pool: Ecto.Adapters.SQL.Sandbox

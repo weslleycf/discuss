@@ -5,11 +5,16 @@
 .help-block {
     color: red;
     text-transform: capitalize;
-    position: absolute;
+    position: relative;
     top: 10px;
     
 }
 .form-group {
     position: relative;
     margin-bottom: 25px;
+}
+a {
+   display: inline-block ;
+   padding-left: 3px;
+   padding-right: 3px; 
 }
